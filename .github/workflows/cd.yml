@@ -1,0 +1,32 @@
+name: CD 
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: SSH and Git Pull on VM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: SSH and Git Pull on VM
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            mkdir ci-cd
+            cd ci-cd
+	    touch 1.txt
+	    echo "see this tes" >> 1.txt
+          EOF
