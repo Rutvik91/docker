@@ -27,6 +27,4 @@ jobs:
             set -e
             mkdir ci-cd
             cd ci-cd
-	    touch 1.txt
-	    echo "see this tes" >> 1.txt
           EOF
